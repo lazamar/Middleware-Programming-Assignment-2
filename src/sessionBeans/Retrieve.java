@@ -1,4 +1,4 @@
-package entityBeans;
+package sessionBeans;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,16 +12,24 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import entityBeans.Patient;
+import entityBeans.PatientInterface;
+import entityBeans.StaffMember;
+import entityBeans.StaffMemberInterface;
+import entityBeans.Treatment;
+import entityBeans.TreatmentInterface;
 
 @Stateless
 @Remote(RetrieveInterface.class)
-public class Retrieve implements RetrieveInterface, Serializable {
+public class Retrieve implements Serializable, RetrieveInterface {
 
 	
 	private static final long serialVersionUID = 1L;
-	private static EntityManagerFactory emfactory = Persistence
-			.createEntityManagerFactory("Assignment1_JPA");
+	@PersistenceContext
+	private static EntityManager entitymanager;
 	private static Lock lock = new ReentrantLock();
 	
 	// -------------- Static Methods ----------------------
@@ -31,24 +39,19 @@ public class Retrieve implements RetrieveInterface, Serializable {
 	}
 
 	public static void end() {
-		emfactory.close();
 	}
 	
 	// -------------- Interface Methods ----------------------
 	
 	@Override
 	public void start() {
-		if (emfactory == null) {
-			emfactory = Persistence
-					.createEntityManagerFactory("Assignment1_JPA");
-		}
 	}
 	
 	//======= Retrieve Objects =========
 
 	@Override
 	public List<PatientInterface> allPatients() {
-		EntityManager entitymanager = emfactory.createEntityManager();
+		
 		Query query = entitymanager.createQuery("Select p from Patient p");
 		@SuppressWarnings("unchecked")
 		List<PatientInterface> pList = query.getResultList();
@@ -63,7 +66,6 @@ public class Retrieve implements RetrieveInterface, Serializable {
 	
 	@Override
 	public List<StaffMemberInterface> allStaffMembers() {
-		EntityManager entitymanager = emfactory.createEntityManager();
 		Query query = entitymanager.createQuery("Select sm from StaffMember sm");
 		@SuppressWarnings("unchecked")
 		List<StaffMemberInterface> smList = query.getResultList();
@@ -71,7 +73,6 @@ public class Retrieve implements RetrieveInterface, Serializable {
 	}
 	@Override
 	public List<TreatmentInterface> pTreatments(int id) {
-		EntityManager entitymanager = emfactory.createEntityManager();
 		Query query = entitymanager
 				.createQuery("Select t from Treatment t where t.patient.id = :patient");
 		query.setParameter("patient", id);
@@ -88,7 +89,6 @@ public class Retrieve implements RetrieveInterface, Serializable {
 
 	@Override
 	public List<PatientInterface> pByName(String name) {
-		EntityManager entitymanager = emfactory.createEntityManager();
 		Query query = entitymanager
 				.createQuery("Select p from Patient p where p.name = :name");
 		query.setParameter("name", name);
@@ -106,7 +106,6 @@ public class Retrieve implements RetrieveInterface, Serializable {
 	
 	@Override
 	public StaffMemberInterface getStaffMemberById(int id) {
-		EntityManager entitymanager = emfactory.createEntityManager();
 		// Prepare query
 		Query query = entitymanager
 				.createQuery("Select sm from StaffMember sm where sm.id = :id");
@@ -123,7 +122,6 @@ public class Retrieve implements RetrieveInterface, Serializable {
 	
 	@Override
 	public PatientInterface getPatientById(int id) {
-		EntityManager entitymanager = emfactory.createEntityManager();
 		// Prepare query
 		Query query = entitymanager
 				.createQuery("Select p from Patient p where p.id = :id");
@@ -140,7 +138,6 @@ public class Retrieve implements RetrieveInterface, Serializable {
 	
 	@Override
 	public TreatmentInterface getTreatmentById(int id) {
-		EntityManager entitymanager = emfactory.createEntityManager();
 		// Prepare query
 		Query query = entitymanager
 				.createQuery("Select t from Treatment t where t.id = :id");

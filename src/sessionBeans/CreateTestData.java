@@ -1,23 +1,27 @@
-package entityBeans;
+package sessionBeans;
 
 import java.math.BigDecimal;
-import java.rmi.RemoteException;
 import java.util.Date;
 
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 
-public class CreataTestData {
+import entityBeans.Patient;
+import entityBeans.StaffMember;
+import entityBeans.StaffMemberInterface;
+import entityBeans.Treatment;
+import entityBeans.TreatmentInterface;
 
-	public static void main(String[] args) throws RemoteException {
-
-		EntityManagerFactory emfactory = Persistence
-				.createEntityManagerFactory("Assignment1_JPA");
-
-		EntityManager entitymanager = emfactory.createEntityManager();
-		entitymanager.getTransaction().begin();
-
+@Stateless
+@Remote(CreateTestDataInterface.class)
+public class CreateTestData implements CreateTestDataInterface {
+	@PersistenceContext
+	private static EntityManager entitymanager;
+	
+	public void doIt() {
+		
 		// Create Patient
 		Patient p1 = new Patient();
 		p1.setName("John Smith");
@@ -76,6 +80,7 @@ public class CreataTestData {
 		treat1.setDiagnosis("Tuberculosis");
 		treat1.setEstimatedDuration(40);
 		treat1.setStartDate(new Date());
+		treat1.setEndDate(new Date());
 		treat1.setEstimatedPrice(new BigDecimal(1000.99));
 		treat1.setPatient(p1);
 		treat1.setPractitioner(prac1);
@@ -85,6 +90,7 @@ public class CreataTestData {
 		treat2.setDiagnosis("Flu");
 		treat2.setEstimatedDuration(15);
 		treat2.setStartDate(new Date());
+		treat2.setEndDate(new Date());
 		treat2.setEstimatedPrice(new BigDecimal(1200.99));
 		treat2.setPatient(p2);
 		treat2.setPractitioner(prac2);
@@ -94,6 +100,7 @@ public class CreataTestData {
 		treat3.setDiagnosis("Meningitis");
 		treat3.setEstimatedDuration(7);
 		treat3.setStartDate(new Date());
+		treat3.setEndDate(new Date());
 		treat3.setEstimatedPrice(new BigDecimal(150.99));
 		treat3.setPatient(p3);
 		treat3.setPractitioner(prac3);
@@ -103,6 +110,7 @@ public class CreataTestData {
 		treat4.setDiagnosis("Sore throat.");
 		treat4.setEstimatedDuration(16);
 		treat4.setStartDate(new Date());
+		treat4.setEndDate(new Date());
 		treat4.setEstimatedPrice(new BigDecimal(604.99));
 		treat4.setPatient(p4);
 		treat4.setPractitioner(prac1);
@@ -112,6 +120,7 @@ public class CreataTestData {
 		treat5.setDiagnosis("Grumpyness");
 		treat5.setEstimatedDuration(4);
 		treat5.setStartDate(new Date());
+		treat5.setEndDate(new Date());
 		treat5.setEstimatedPrice(new BigDecimal(899.99));
 		treat5.setPatient(p5);
 		treat5.setPractitioner(prac2);
@@ -121,6 +130,7 @@ public class CreataTestData {
 		treat6.setDiagnosis("Headache");
 		treat6.setEstimatedDuration(12);
 		treat6.setStartDate(new Date());
+		treat6.setEndDate(new Date());
 		treat6.setEstimatedPrice(new BigDecimal(433.99));
 		treat6.setPatient(p6);
 		treat6.setPractitioner(prac3);
@@ -140,9 +150,7 @@ public class CreataTestData {
 		entitymanager.persist(treat4);
 		entitymanager.persist(treat5);
 		entitymanager.persist(treat6);
-		entitymanager.getTransaction().commit();
 
-		entitymanager.close();
-		emfactory.close();
+		System.out.println("Success!! I think everything was saved.");
 	}
 }

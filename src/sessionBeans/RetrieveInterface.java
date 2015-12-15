@@ -1,9 +1,13 @@
-package entityBeans;
+package sessionBeans;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Remote;
+
+import entityBeans.PatientInterface;
+import entityBeans.StaffMemberInterface;
+import entityBeans.TreatmentInterface;
 
 @Remote
 public interface RetrieveInterface {

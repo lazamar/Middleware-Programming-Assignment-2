@@ -13,7 +13,7 @@ public abstract class Client implements Serializable, ClientInterface {
 
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	private int id;
 	private String name, address;
 	@Temporal(TemporalType.DATE)
