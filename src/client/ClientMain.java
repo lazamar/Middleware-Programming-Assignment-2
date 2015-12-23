@@ -20,8 +20,8 @@ public class ClientMain {
 		
 		//Get "Retrieve" object, which will be the port to all Entity Beans objects.
 		Context ctx = getContext();
-//		CreateTestDataInterface cd = (CreateTestDataInterface) ctx.lookup("CreateTestData/remote");
-//		cd.doIt();
+		CreateTestDataInterface cd = (CreateTestDataInterface) ctx.lookup("CreateTestData/remote");
+		cd.doIt();
 		System.out.println("Seems like it was done");
 		
 		retrieve =  (RetrieveInterface) ctx.lookup("Retrieve/remote");	

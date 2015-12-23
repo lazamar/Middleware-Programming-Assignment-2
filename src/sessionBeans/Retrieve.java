@@ -10,8 +10,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -162,6 +160,7 @@ public class Retrieve implements Serializable, RetrieveInterface {
 		treat1.setActive(active);
 		treat1.setEstimatedDuration(duration);
 		treat1.setStartDate(new Date());
+		treat1.setEndDate(new Date());
 		treat1.setEstimatedPrice(price);
 		treat1.setDiagnosis(diagnosis);
 		// TODO: Make get patient and sMember by their ID.
@@ -177,10 +176,7 @@ public class Retrieve implements Serializable, RetrieveInterface {
 	public void saveTreatment(TreatmentInterface treat){
 		lock.lock(); // Acquire the lock
 		boolean existingRecord = true;
-		EntityManagerFactory emfactory = Persistence
-				.createEntityManagerFactory("Assignment1_JPA");
-		EntityManager entitymanager = emfactory.createEntityManager();
-		entitymanager.getTransaction().begin();
+
 		Treatment newTreat = entitymanager.find(Treatment.class, treat.getId());	
 		if(newTreat == null){
 			newTreat = new Treatment();
@@ -198,19 +194,13 @@ public class Retrieve implements Serializable, RetrieveInterface {
 		if(!existingRecord){
 			entitymanager.persist(newTreat);
 		}
-		entitymanager.getTransaction().commit();
-		entitymanager.close();
-		emfactory.close();
 		lock.unlock();
 	}
 	
 	@Override 
 	public void savePatient(PatientInterface p){
 		lock.lock(); // Acquire the lock
-		EntityManagerFactory emfactory = Persistence
-				.createEntityManagerFactory("Assignment1_JPA");
-		EntityManager entitymanager = emfactory.createEntityManager();
-		entitymanager.getTransaction().begin();
+
 		Patient modifiedPatient = entitymanager.find(Patient.class, p.getId());
 		if(modifiedPatient != null){
 			modifiedPatient.setAddress(p.getAddress());
@@ -220,9 +210,7 @@ public class Retrieve implements Serializable, RetrieveInterface {
 		} else {	
 			entitymanager.persist(p);
 		}
-		entitymanager.getTransaction().commit();
-		entitymanager.close();
-		emfactory.close();	
+
 		lock.unlock();
 	}
 
