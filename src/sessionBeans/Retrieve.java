@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -13,9 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import entityBeans.Patient;
 import entityBeans.PatientInterface;
-import entityBeans.StaffMember;
 import entityBeans.StaffMemberInterface;
 import entityBeans.Treatment;
 import entityBeans.TreatmentInterface;
@@ -28,7 +24,6 @@ public class Retrieve implements Serializable, RetrieveInterface {
 	private static final long serialVersionUID = 1L;
 	@PersistenceContext
 	private static EntityManager entitymanager;
-	private static Lock lock = new ReentrantLock();
 	
 	// -------------- Static Methods ----------------------
 	protected Retrieve() {
@@ -172,46 +167,7 @@ public class Retrieve implements Serializable, RetrieveInterface {
 		return treat1;
 	}
 	
-	@Override
-	public void saveTreatment(TreatmentInterface treat){
-		lock.lock(); // Acquire the lock
-		boolean existingRecord = true;
-
-		Treatment newTreat = entitymanager.find(Treatment.class, treat.getId());	
-		if(newTreat == null){
-			newTreat = new Treatment();
-			existingRecord = false;
-		}
-		newTreat.setActive(treat.isActive());
-		newTreat.setAdditionalFees(treat.getAdditionalFees());
-		newTreat.setEstimatedPrice(treat.getEstimatedPrice());
-		newTreat.setDiagnosis(treat.getDiagnosis());
-		newTreat.setEndDate(treat.getEndDate());
-		newTreat.setEstimatedDuration(treat.getEstimatedDuration());
-		newTreat.setPatient(entitymanager.find(Patient.class, treat.getPatient().getId()));
-		newTreat.setPractitioner(entitymanager.find(StaffMember.class, treat.getPractitioner().getId()));
-		newTreat.setStartDate(treat.getStartDate());
-		if(!existingRecord){
-			entitymanager.persist(newTreat);
-		}
-		lock.unlock();
-	}
 	
-	@Override 
-	public void savePatient(PatientInterface p){
-		lock.lock(); // Acquire the lock
-
-		Patient modifiedPatient = entitymanager.find(Patient.class, p.getId());
-		if(modifiedPatient != null){
-			modifiedPatient.setAddress(p.getAddress());
-			modifiedPatient.setHasInsurance(p.isHasInsurance());
-			modifiedPatient.setName(p.getName());
-			modifiedPatient.setRegistrationDate(p.getRegistrationDate());
-		} else {	
-			entitymanager.persist(p);
-		}
-
-		lock.unlock();
-	}
+	
 
 }

@@ -31,8 +31,4 @@ public interface RetrieveInterface {
 
 	TreatmentInterface getTreatmentById(int id);
 
-	void saveTreatment(TreatmentInterface treat);
-
-	void savePatient(PatientInterface p);
-
 }
